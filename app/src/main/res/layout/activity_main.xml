@@ -7,12 +7,50 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:id="@+id/response_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="ResponseText"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/productNameField"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/productNameField"
+        app:layout_constraintTop_toBottomOf="@+id/addTicketButton" />
+
+    <EditText
+        android:id="@+id/productNameField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/product_name_hint"
+        android:inputType="textPersonName"
+        android:importantForAutofill="no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/priceField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/price_hint"
+        android:inputType="number"
+        android:importantForAutofill="no"
+        app:layout_constraintEnd_toEndOf="@+id/productNameField"
+        app:layout_constraintStart_toStartOf="@+id/productNameField"
+        app:layout_constraintTop_toBottomOf="@+id/productNameField" />
+
+    <Button
+        android:id="@+id/addTicketButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/add_ticket_button"
+        app:layout_constraintEnd_toEndOf="@+id/productNameField"
+        app:layout_constraintStart_toStartOf="@+id/productNameField"
+        app:layout_constraintTop_toBottomOf="@+id/priceField" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
