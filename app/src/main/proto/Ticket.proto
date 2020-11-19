@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+option java_outer_classname = "TicketClass";
+option java_package = "com.klimbi123.tickettesttask";
+
+message Ticket {
+  required uint32 id = 1;
+  required string productName = 2;
+  required uint32 price = 3; // price in cents
+}

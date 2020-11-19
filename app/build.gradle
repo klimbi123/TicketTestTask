@@ -1,5 +1,11 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.protobuf'
+}
+
+sourceSets {
+    main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
+    main.java.srcDirs += "$projectDir/src/main/proto"
 }
 
 android {
@@ -28,8 +34,29 @@ android {
     }
 }
 
-dependencies {
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+    plugins {
+        javalite {
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.plugins {
+                javalite { }
+            }
+        }
+    }
+}
 
+dependencies {
+    implementation 'com.google.protobuf:protobuf-lite:3.0.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
