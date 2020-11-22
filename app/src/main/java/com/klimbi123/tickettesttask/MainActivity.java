@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText productNameField;
     private EditText priceField;
     private Button addTicketButton;
+    private ProgressBar sendProgress;
     private TicketClass.Ticket ticket;
 
     private TextWatcher inputFieldsFilled = new TextWatcher() {
@@ -48,8 +51,11 @@ public class MainActivity extends AppCompatActivity {
         productNameField = findViewById(R.id.productNameField);
         priceField = findViewById(R.id.priceField);
         addTicketButton = findViewById(R.id.addTicketButton);
+        sendProgress = findViewById(R.id.sendProgress);
 
         addTicketButton.setOnClickListener(view -> {
+            productNameField.onEditorAction(EditorInfo.IME_ACTION_DONE);
+            priceField.onEditorAction(EditorInfo.IME_ACTION_DONE);
             ticket = TicketClass.Ticket.newBuilder()
                     .setId(5)
                     .setProductName(productNameField.getText().toString())
@@ -59,15 +65,17 @@ public class MainActivity extends AppCompatActivity {
             productNameField.setText("");
             priceField.setText("");
 
-            String shortMessage = String.format("Sending: %s - %s", ticket.getProductName(), ticket.getPrice());
-            responseText.setText("Sending");
-            Snackbar.make(view, shortMessage, Snackbar.LENGTH_LONG)
-                    .setAction("AddTicket", null).show();
+            String longMessage = String.format("Sending\nProduct name: %s\nPrice (cents): %s",ticket.getProductName(), ticket.getPrice());
+            responseText.setText(longMessage);
+
+            sendProgress.setVisibility(ProgressBar.VISIBLE);
             send(ticket);
         });
 
         productNameField.addTextChangedListener(inputFieldsFilled);
         priceField.addTextChangedListener(inputFieldsFilled);
+
+        sendProgress.setVisibility(ProgressBar.INVISIBLE);
     }
 
     private void send(TicketClass.Ticket ticket) {
@@ -83,9 +91,15 @@ public class MainActivity extends AppCompatActivity {
 
                 boolean sentSuccessfully = http.getResponseCode() == 200;
                 String longMessage = String.format("%s\nProduct name: %s\nPrice (cents): %s", sentSuccessfully ? "Sent" : "Failed", ticket.getProductName(), ticket.getPrice());
-                responseText.setText(longMessage);
+                runOnUiThread(() -> {
+                    responseText.setText(longMessage);
+                    sendProgress.setVisibility(ProgressBar.INVISIBLE);
+                });
             } catch (java.net.SocketTimeoutException e) {
-                responseText.setText("Send failed: Timeout");
+                runOnUiThread(() -> {
+                    responseText.setText("Send failed: Timeout");
+                    sendProgress.setVisibility(ProgressBar.INVISIBLE);
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
