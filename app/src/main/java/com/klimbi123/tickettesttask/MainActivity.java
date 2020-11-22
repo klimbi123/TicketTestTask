@@ -11,8 +11,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             productNameField.setText("");
             priceField.setText("");
 
-            String longMessage = String.format("Sending\nProduct name: %s\nPrice (cents): %s",ticket.getProductName(), ticket.getPrice());
+            String longMessage = String.format("%s\n%s: %s\n%s: %s", getString(R.string.sending), getString(R.string.product_name_hint), ticket.getProductName(), getString(R.string.price_cents_hint), ticket.getPrice());
             responseText.setText(longMessage);
 
             sendProgress.setVisibility(ProgressBar.VISIBLE);
@@ -79,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void send(TicketClass.Ticket ticket) {
+        String data = String.format("%s: %s\n%s: %s", getString(R.string.product_name_hint), ticket.getProductName(), getString(R.string.price_cents_hint), ticket.getPrice());
         Runnable runnable = () -> {
             try {
                 URL url = new URL("http://192.168.8.102:5000/post");
@@ -90,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
                 ticket.writeTo(out);
 
                 boolean sentSuccessfully = http.getResponseCode() == 200;
-                String longMessage = String.format("%s\nProduct name: %s\nPrice (cents): %s", sentSuccessfully ? "Sent" : "Failed", ticket.getProductName(), ticket.getPrice());
+                String longMessage = String.format("%s\n", sentSuccessfully ? getString(R.string.send_succeed) : getString(R.string.send_fail)) + data;
                 runOnUiThread(() -> {
                     responseText.setText(longMessage);
                     sendProgress.setVisibility(ProgressBar.INVISIBLE);
                 });
             } catch (java.net.SocketTimeoutException e) {
                 runOnUiThread(() -> {
-                    responseText.setText("Send failed: Timeout");
+                    responseText.setText(String.format("%s: Timeout\n", getString(R.string.send_fail)) + data);
                     sendProgress.setVisibility(ProgressBar.INVISIBLE);
                 });
             } catch (IOException e) {

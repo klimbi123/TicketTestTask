@@ -3,4 +3,7 @@
     <string name="product_name_hint">Product name</string>
     <string name="price_cents_hint">Price (cents)</string>
     <string name="add_ticket_button">Add ticket</string>
+    <string name="sending">Sending</string>
+    <string name="send_succeed">Send succeed</string>
+    <string name="send_fail">Send fail</string>
 </resources>
